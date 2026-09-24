@@ -10,11 +10,15 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const configuredClientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+const configuredClientOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 
 function isAllowedOrigin(origin) {
   if (!origin) return true;
-  if (origin === configuredClientOrigin) return true;
+  const normalizedOrigin = origin.trim().replace(/\/$/, '');
+  if (configuredClientOrigins.includes(normalizedOrigin)) return true;
 
   try {
     const url = new URL(origin);
@@ -26,7 +30,7 @@ function isAllowedOrigin(origin) {
   }
 }
 
-app.use(cors({ origin: (origin, callback) => callback(null, isAllowedOrigin(origin)), credentials: true }));
+app.use(cors({ origin: (origin, callback) => callback(null, isAllowedOrigin(origin) ? origin : false), credentials: true }));
 app.use(express.json());
 app.use('/api', apiRoutes);
 
