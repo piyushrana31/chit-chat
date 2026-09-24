@@ -1,0 +1,11 @@
+{
+  "name": "secure-chat",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "client:dev": "npm run dev --prefix client -- --host 0.0.0.0",
+    "client:build": "npm run build --prefix client",
+    "server:dev": "npm run dev --prefix server",
+    "server:start": "npm run start --prefix server"
+  }
+}
